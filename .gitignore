@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+.venv/
+*/venv/
+*/.venv/
+
+# Environment Variables
+.env
+*.env
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project Specific Large Files/Folders
+**/.app_browser_profile/
+**/user_data/
+**/.pytest_cache/
+**/__pycache__/
+*.zip
+*.pdf
+*.csv
+*.db
+*.json
+!package.json
+!composer.json
+!manifest.json
+!dhan_tokens.json
+!activation_config.json
+
+# Data folders
+Daily_Futures_Data/
+Daily_Options_Data/
+test_output/
+generated_project/
+zomato_scraper_profile/
+
+# Ignore nested git directories (if we want to include them as folders)
+# Note: To actually include them, you must remove the .git folder inside them

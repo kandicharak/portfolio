@@ -1,0 +1,14 @@
+# Sensitive credential files
+.env
+.env.*
+dhan_tokens.json
+upstox_tokens.json
+.upstox_tokens.json
+
+# Python cache and env
+__pycache__/
+*.pyc
+.venv/
+
+# Local docs artifacts
+Software_Documentation_Pack/*.pdf

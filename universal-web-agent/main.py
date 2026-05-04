@@ -1,7 +1,13 @@
 import os
 import asyncio
 import argparse
+import sys
+import io
 from dotenv import load_dotenv
+
+# Force UTF-8 encoding for Windows terminal
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8')
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
 from browser_use import Agent
@@ -9,7 +15,8 @@ from browser_use import Agent
 # Load environment variables
 load_dotenv()
 
-USE_LOCAL_LLM = False  
+# CONFIGURATION TOGGLE
+USE_LOCAL_LLM = True  
 
 # Wrapper to fix browser-use compatibility
 class BrowserUseLLM:
@@ -24,7 +31,7 @@ class BrowserUseLLM:
 def get_llm():
     if USE_LOCAL_LLM:
         print("\n--- [STATUS] Using Local LLM via LM Studio ---")
-        model_name = "local-model"
+        model_name = "qwen/qwen2.5-coder-14b"
         llm = ChatOpenAI(
             base_url="http://localhost:1234/v1",
             api_key="lm-studio",

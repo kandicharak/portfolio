@@ -1,0 +1,75 @@
+HTML size: 191268 chars
+
+=== JSON-LD BLOCKS ===
+
+Block 0 (len=97):
+{"@context":"http://schema.org","@type":"WebSite","name":"Zomato","url":"https://www.zomato.com"}
+
+Block 1 (len=1538):
+{"@context":"https://schema.org","@type":"Restaurant","name":"Samosa Junction","url":"/jammu/samosa-junction-gandhi-nagar","openingHours":"10am – 9pm (Today)","hasmap":"https://maps.zomato.com/php/staticmap?center=32.7008025976,74.8582146317&maptype=zomato&markers=32.7008025976,74.8582146317,pin_res32&sensor=false&scale=2&zoom=16&language=en&size=240x150&size=400x240","menu":"/jammu/samosa-junction-gandhi-nagar/menu","address":{"@type":"PostalAddress","streetAddress":"Gole Market, Near Peer Baba, Gandhi Nagar, Jammu","addressLocality":"Gandhi Nagar, Jammu","addressRegion":"Jammu","postalCode":"180004","addressCountry":"India"},"geo":{"@type":"GeoCoordinates","latitude":"32.7008025976","longitude":"74.8582146317"},"potentialAction":{"@type":"OrderAction","deliveryMethod":["http://purl.org/goodrelations/v1#DeliveryModeOwnFleet"],"target":{"@type":"EntryPoint","inLanguage":"en-US","url":"/jammu/samosa-junction-gandhi-nagar/book","actionPlatform":["http://schema.org/DesktopWebPlatform","http://schema.org/MobileWebPlatform","http://schema.org/IOSPlatform","http://schema.org/AndroidPlatform"]},"inLanguage":""},"telephone":"+916005014967","priceRange":"₹400 for two people (approx.)","paymentAccepted":"\nDigital payments accepted","image":"https://b.zmtcdn.com/data/pictures/chains/6/19570636/9bfd4d369611a3a48d82399f8206db7b.jpeg?output-format=webp","servesCuisine":"Street Food, Fast Food, Chinese, Beverages","aggregateRating":{"@type":"AggregateRating","ratingValue":"3.1","ratingCount":13,"bestRating":5,"worstRating":0}}
+
+Block 2 (len=754):
+{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":0,"item":{"id":"https://www.zomato.com","name":"Home","url":"https://www.zomato.com"}},{"@type":"ListItem","position":1,"item":{"id":"https://www.zomato.com/india","name":"India","url":"https://www.zomato.com/india"}},{"@type":"ListItem","position":2,"item":{"id":"https://www.zomato.com/jammu/restaurants","name":"Jammu","url":"https://www.zomato.com/jammu/restaurants"}},{"@type":"ListItem","position":3,"item":{"id":"https://www.zomato.com/jammu/gandhi-nagar-restaurants","name":"Gandhi Nagar","url":"https://www.zomato.com/jammu/gandhi-nagar-restaurants"}},{"@type":"ListItem","position":4,"item":{"id":"","name":"Samosa Junction","url":""}}]}
+
+
+=== PRELOADED STATE ===
+Top-level keys: ['pages', 'blogData', 'pageUrlMappings', 'careers', 'allJobs', 'department', 'aboutus', 'sneakpeek', 'apiState', 'entities', 'user', 'uiLogic', 'location', 'gAds', 'footer', 'langKeys', 'deviceSpecificInfo', 'pageBlockerInfo', 'fullPageAds', 'networkState', 'fetchConfigs', 'hrefLangInfo', 'pageConfig', 'partnershipLoginModal', 'partnershipLoginOptionModal', 'doesNotDeliverModal', 'backButton', 'renderingStrategy']
+  pages: ['current', 'contact', 'gift', 'goodbye', 'restaurant', 'awards', 'user', 'userSettings', 'sauceBlog', 'Kitchen', 'celebrations', 'cdng', 'postOrder', 'zomaland', 'orderOnline']
+  blogData: ['blogs', 'error', 'isfetching']
+  pageUrlMappings: ['/jammu/samosa-junction-gandhi-nagar']
+  careers: ['departments']
+  allJobs: ['openings', 'filters']
+  department: []
+  aboutus: ['leadershipData']
+  sneakpeek: []
+  apiState: []
+  entities: ['REVIEWS', 'IMAGES', 'VIDEOS', 'REVIEW_COMMENTS', 'REVIEW_REPLIES', 'PHOTO_COMMENTS', 'POSITIVE_TAGS', 'NEGATIVE_TAGS', 'RATING', 'EVENTS', 'AD_BANNERS', 'RESTAURANTS', 'COLLECTIONS', 'ORDER', 'ADDRESSES']
+  user: ['currentAddress', 'is_admin_user', 'admin_access', 'admin_links']
+  uiLogic: ['isPreciseLocationBannerOpen', 'searchPageMounted', 'isUniversalLocationWithBannerModalOpen', 'isUniversalLocationModalWithDishCardOpen', 'mountPartnershipPreciseLocationModal', 'universalLMDishCard', 'promoBlockerOnPageLoadAllowed']
+  location: ['currentLocation']
+  gAds: list of 0
+  footer: ['languages', 'selectedLanguage', 'linksData', 'footerDataArray', 'disclaimerText']
+  langKeys: ['RES_INFO_TITLE', 'ADDRESS_TITLE', 'FEATURED_IN_TITLE', 'RATE_EXPERIENCE_TITLE', 'WRITE_REVIEW_TITLE', 'CONTACT_TITLE', 'REVIEW_INPUT_LABEL', 'REVIEW_ERROR_TOAST_MSG', 'IMAGE_UPLOADER_DRAG_DROP_LABEL', 'IMAGE_UPLOADER_BROWSE_BUTTON_LABEL', 'CLEAR_TEXT', 'VIEW_GALLERY', 'OUR_SPONSORS_TITLE', 'SIMILAR_RES_TITLE', 'HISTOGRAM_TITLE']
+  deviceSpecificInfo: ['browser']
+  pageBlockerInfo: []
+  fullPageAds: ['pageViews', 'adVisible']
+  networkState: ['isOnline']
+  fetchConfigs: ['headers']
+  hrefLangInfo: list of 13
+  pageConfig: ['showLocationBannerAutoPopup', 'openAppPill', 'isLocationPopupFlowAllowed', 'cacheMeta', 'hideCookieBanner', 'showRatingV2']
+  partnershipLoginModal: ['isVisible']
+  partnershipLoginOptionModal: ['isVisible']
+  doesNotDeliverModal: ['isVisible']
+  backButton: ['showLoadingState']
+  renderingStrategy: ['name']
+
+  pages keys: ['current', 'contact', 'gift', 'goodbye', 'restaurant', 'awards', 'user', 'userSettings', 'sauceBlog', 'Kitchen']
+  current keys: ['name', 'pageTitle', 'pageDescription', 'resId', 'pageUrl', 'canonicalUrl', 'title', 'subType', 'key', 'ogTitle', 'ogDescription', 'ogUrl', 'ampHtmlUrl', 'isFloodReliefRes', 'isNoIndex', 'show_rating_v15', 'showBookingV2', 'isRestaurantPageV2', 'isO2enabled', 'isMobile']
+
+
+=== MENU-RELATED SECTIONS ===
+
+
+=== REVIEW-RELATED SECTIONS ===
+
+
+=== MENU ITEM PATTERNS ===
+
+
+=== REVIEW PATTERNS ===
+
+
+=== H2 SECTIONS ===
+  H2: Overview
+  H2: Order Online
+  H2: Reviews
+  H2: Photos
+  H2: Menu
+  H2: Report an error
+  H2: Log in
+
+
+=== MENU ITEMS IN HTML ===
+
+
+=== REVIEW ITEMS IN HTML ===

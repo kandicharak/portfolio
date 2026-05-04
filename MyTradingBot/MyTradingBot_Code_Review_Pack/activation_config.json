@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "enforce_online": false,
+  "server_url": "http://YOUR_SERVER_IP:8787",
+  "timeout_seconds": 5,
+  "offline_grace_hours": 72,
+  "app_id": "mytradingbot"
+}

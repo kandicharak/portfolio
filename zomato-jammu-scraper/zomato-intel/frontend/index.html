@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zomato Intelligence Dashboard</title>
+<meta name="description" content="AI-powered Zomato data scraping and market intelligence dashboard for restaurant analytics.">
+<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  /* Quick addition for the location filters in navbar */
+  .loc-filter { display: flex; gap: 8px; margin-left: 20px; align-items: center; background: rgba(255,255,255,0.05); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+  .loc-filter select { background: transparent; border: none; color: #fff; font-size: 0.8rem; font-weight: 600; outline: none; cursor: pointer; }
+  .loc-filter select option { background: #1a1f2e; color: #fff; }
+  .loc-label { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ── NAVBAR ── -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="brand-dot"></div>
+      <span>ZOMATO INTEL</span>
+    </div>
+
+    <!-- Location Filters -->
+    <div class="loc-filter">
+      <span class="loc-label">Region:</span>
+      <select id="filterState">
+        <option value="all">All States</option>
+        <option value="J&K">J&K</option>
+        <option value="Punjab">Punjab</option>
+      </select>
+      <select id="filterCity">
+        <option value="all">All Cities</option>
+        <option value="Jammu">Jammu</option>
+        <option value="Ludhiana">Ludhiana</option>
+      </select>
+    </div>
+
+    <div class="navbar-tabs">
+      <button class="nav-tab active" data-tab="scraper"><span class="tab-icon">🕷️</span> <span>Scraper</span></button>
+      <button class="nav-tab" data-tab="stats"><span class="tab-icon">📊</span> <span>Analytics</span></button>
+      <button class="nav-tab" data-tab="map"><span class="tab-icon">🗺️</span> <span>Heatmap</span></button>
+      <button class="nav-tab" data-tab="data"><span class="tab-icon">🔍</span> <span>Data Explorer</span></button>
+    </div>
+    <div class="navbar-actions">
+      <button class="btn-icon" id="refreshBtn" title="Refresh data">🔄</button>
+      <button class="btn-icon" id="settingsBtn" title="Settings & Reset">⚙️</button>
+    </div>
+  </nav>
+
+  <!-- ── CONTENT ── -->
+  <div class="content">
+
+    <!-- ═══ SCRAPER SCREEN ═══ -->
+    <div class="screen active" id="screen-scraper">
+      <div class="scraper-screen" style="width:100%">
+        <div class="scraper-status-bar">
+          <div class="status-dot" id="scraperStatusDot"></div>
+          <span id="scraperStatusText">Ready</span>
+          <span style="margin-left:auto;color:var(--text3)" id="scraperStatLine">Restaurants: — | Reviews: — | Menu Items: —</span>
+        </div>
+        <div class="scraper-layout">
+          <!-- Sidebar Controls -->
+          <div class="scraper-sidebar">
+            <div class="section-title">📍 Target Location</div>
+            <div class="form-group">
+              <label class="form-label">City Name</label>
+              <input class="form-control" id="targetCity" value="Jammu" placeholder="e.g. Jammu, Ludhiana">
+            </div>
+            <div class="form-group">
+              <label class="form-label">State Name</label>
+              <input class="form-control" id="targetState" value="J&K" placeholder="e.g. J&K, Punjab">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Zomato URL</label>
+              <input class="form-control" id="targetUrl" value="https://www.zomato.com/jammu/restaurants?category=1" placeholder="Paste Zomato URL">
+            </div>
+
+            <div class="divider"></div>
+            <div class="section-title">🔧 Scraping Options</div>
+            <div class="form-group">
+              <label class="form-label">Max Reviews per Restaurant</label>
+              <input type="number" class="form-control" id="maxReviews" value="50" min="0" max="500">
+            </div>
+            <label class="checkbox-row"><input type="checkbox" id="chkReset"><span>⚠️ Reset DB before scraping</span></label>
+
+            <div class="divider"></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-primary" id="startScraperBtn" style="width:100%;justify-content:center">🚀 Start Scraping</button>
+              <button class="btn btn-danger" id="stopScraperBtn" disabled style="justify-content:center">🛑 Stop</button>
+            </div>
+          </div>
+
+          <!-- Main Log Area -->
+          <div class="scraper-main">
+            <div class="kpi-grid" id="scraperKpis">
+              <div class="kpi-card" style="--accent:var(--red)"><div class="kpi-icon">🏪</div><div class="kpi-value" id="kpiRestaurants">—</div><div class="kpi-label">Restaurants</div></div>
+              <div class="kpi-card" style="--accent:var(--amber)"><div class="kpi-icon">⭐</div><div class="kpi-value" id="kpiReviews">—</div><div class="kpi-label">Reviews</div></div>
+              <div class="kpi-card" style="--accent:var(--teal)"><div class="kpi-icon">🍽️</div><div class="kpi-value" id="kpiMenuItems">—</div><div class="kpi-label">Menu Items</div></div>
+              <div class="kpi-card" style="--accent:var(--purple)"><div class="kpi-icon">💾</div><div class="kpi-value" id="kpiDbSize">—</div><div class="kpi-label">DB Size</div></div>
+            </div>
+            <div class="card" id="progressCard" style="display:none">
+              <div class="card-body" style="padding:16px">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                  <span style="font-size:.85rem;font-weight:600" id="progressLabel">Scraping...</span>
+                  <span style="font-size:.85rem;color:var(--amber)" id="progressPct">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="card" style="flex:1">
+              <div class="card-header"><span class="card-title">📡 Live Scraper Log</span></div>
+              <div class="card-body" style="padding:0">
+                <div class="log-output" id="logOutput">
+                  <div class="log-placeholder">Log will appear here...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ STATS SCREEN ═══ -->
+    <div class="screen" id="screen-stats">
+      <div class="stats-screen" style="width:100%">
+        <div class="stats-content">
+          <div class="kpi-grid" style="grid-template-columns:repeat(6,1fr);margin-bottom:28px" id="statsKpis">
+            <div class="kpi-card" style="--accent:var(--red)"><div class="kpi-icon">🏪</div><div class="kpi-value" id="sKpiRestaurants">—</div><div class="kpi-label">Restaurants</div></div>
+            <div class="kpi-card" style="--accent:var(--amber)"><div class="kpi-icon">💬</div><div class="kpi-value" id="sKpiReviews">—</div><div class="kpi-label">Reviews</div></div>
+            <div class="kpi-card" style="--accent:var(--teal)"><div class="kpi-icon">🍽️</div><div class="kpi-value" id="sKpiMenu">—</div><div class="kpi-label">Menu Items</div></div>
+            <div class="kpi-card" style="--accent:var(--purple)"><div class="kpi-icon">⭐</div><div class="kpi-value" id="sKpiRating">—</div><div class="kpi-label">Avg Delivery Rating</div></div>
+            <div class="kpi-card" style="--accent:var(--blue)"><div class="kpi-icon">💰</div><div class="kpi-value" id="sKpiPrice">—</div><div class="kpi-label">Avg Price</div></div>
+            <div class="kpi-card" style="--accent:var(--warn)"><div class="kpi-icon">💾</div><div class="kpi-value" id="sKpiDb">—</div><div class="kpi-label">DB Size</div></div>
+          </div>
+          <div class="charts-grid">
+            <div class="chart-card"><div class="chart-title">🍜 Top Cuisines</div><div class="chart-wrap"><canvas id="chartCuisine"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">💰 Price Distribution</div><div class="chart-wrap"><canvas id="chartPrice"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">📍 Area Delivery Rating Comparison</div><div class="chart-wrap" style="height:300px"><canvas id="chartArea"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">🥦 Veg vs Non-Veg Items</div><div class="chart-wrap"><canvas id="chartVeg"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">🔝 Top 10 Menu Items</div><div class="chart-wrap" style="height:300px"><canvas id="chartDishes"></canvas></div></div>
+            <div class="chart-card"><div class="chart-title">⭐ Delivery Rating Distribution</div><div class="chart-wrap"><canvas id="chartRating"></canvas></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MAP SCREEN ═══ -->
+    <div class="screen" id="screen-map">
+      <div class="map-screen">
+          <!-- Map Filters -->
+          <div class="map-controls glass">
+            <div class="map-control-group">
+              <label>Heatmap Mode</label>
+              <div class="radio-group" id="mapHeatMode">
+                <button class="radio-btn active" data-mode="rating">⭐ Rating</button>
+                <button class="radio-btn" data-mode="density">📍 Density</button>
+                <button class="radio-btn" data-mode="price">💰 Price</button>
+                <button class="radio-btn" data-mode="delivery_votes">🛵 Delivery Pop.</button>
+              </div>
+            </div>
+
+            <div class="map-control-group">
+              <label>Layer Mode</label>
+              <div class="radio-group" id="mapLayerBtns">
+                <button class="radio-btn active" data-layer="heat">🔥 Heatmap</button>
+                <button class="radio-btn" data-layer="pins">📌 Pins</button>
+                <button class="radio-btn" data-layer="both">🌓 Both</button>
+              </div>
+            </div>
+
+            <div class="map-control-group">
+              <label>Min Rating: <span id="valMinRating">0</span></label>
+              <input type="range" id="mapMinRating" min="0" max="5" step="0.5" value="0" class="slider">
+            </div>
+
+            <div class="map-control-group">
+              <label>Max Price: <span id="valMaxPrice">2000</span></label>
+              <input type="range" id="mapMaxPrice" min="0" max="3000" step="100" value="2000" class="slider">
+            </div>
+
+            <button class="btn btn-primary btn-full" id="refreshMapBtn">Update Intelligence Map</button>
+          </div>
+
+          <div id="map"></div>
+          
+          <!-- Map Legend -->
+          <div id="mapLegend" class="map-legend glass">
+            <div class="legend-title">Market Potential</div>
+            <div class="legend-scale">
+              <div class="scale-bar"></div>
+              <div class="scale-labels">
+                <span>Low</span>
+                <span>Medium</span>
+                <span>High</span>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- ═══ DATA EXPLORER SCREEN ═══ -->
+    <div class="screen" id="screen-data">
+      <div class="data-screen" style="width:100%">
+        <div class="data-content">
+          <div class="data-toolbar">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <h3 style="margin:0;color:var(--text1)">📊 Unified Explorer</h3>
+              <div class="view-switcher">
+                <button class="view-btn active" data-view="restaurants">🏪 Restaurants</button>
+                <button class="view-btn" data-view="menu_items">🍽️ Menu Items</button>
+                <button class="view-btn" data-view="reviews">💬 Reviews</button>
+                <button class="view-btn" data-view="master_consolidated">💎 Master View</button>
+              </div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:12px;align-items:center">
+              <input class="form-control" id="dataSearch" placeholder="🔍 Search current view..." style="width:280px;margin-bottom:0">
+              <select class="form-control" id="dataPerPage" style="width:100px;margin-bottom:0">
+                <option value="25">25 rows</option>
+                <option value="50">50 rows</option>
+                <option value="100">100 rows</option>
+              </select>
+              <button class="btn btn-primary" id="exportBtn">📥 Export CSV</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table id="dataTable">
+              <thead id="dataTableHead"><tr><td style="padding:20px;color:var(--text3)">Loading...</td></tr></thead>
+              <tbody id="dataTableBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="dataPagination"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ AI ANALYST SCREEN ═══ -->
+    <div class="screen" id="screen-ai">
+      <div class="ai-screen" style="width:100%">
+        <div class="ai-layout" style="flex:1">
+          <div class="ai-sidebar">
+            <div class="section-title">🤖 AI Analyst</div>
+            <p style="font-size:.8rem;color:var(--text3);margin-bottom:16px">Multi-city intelligence active. Ask about any specific region.</p>
+            <div class="section-title" style="margin-top:8px">💡 Quick Prompts</div>
+            <div class="quick-prompts" id="quickPrompts">
+              <button class="quick-prompt">Compare Ludhiana vs Jammu restaurant delivery ratings</button>
+              <button class="quick-prompt">Which area has the highest delivery rated restaurants?</button>
+              <button class="quick-prompt">Top 10 most popular dishes city-wide</button>
+              <button class="quick-prompt">Summarize the entire market</button>
+            </div>
+          </div>
+          <div class="ai-main">
+            <div class="ai-messages" id="aiMessages">
+              <div class="ai-empty" id="aiEmpty">
+                <div class="ai-big-icon">🤖</div>
+                <h3>Ask me anything about your multi-city data</h3>
+              </div>
+            </div>
+            <div class="ai-input-area">
+              <div class="ai-input-row">
+                <textarea class="ai-textarea" id="aiInput" placeholder="Ask anything... (Press Enter to send)" rows="2"></textarea>
+                <button class="btn btn-primary" id="aiSendBtn" style="align-self:flex-end">Send ➤</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.content -->
+</div><!-- /#app -->
+
+<!-- ═══ SETTINGS MODAL ═══ -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">⚙️ Settings</span>
+      <button class="btn-icon" id="closeSettingsBtn">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <button class="modal-tab active" data-mtab="settings">⚙️ Config</button>
+        <button class="modal-tab" data-mtab="reset">🔧 Reset</button>
+      </div>
+      <div class="modal-tab-content active" id="mtab-settings">
+        <div class="form-group"><label class="form-label">Gemini API Key</label><input class="form-control" id="settingsApiKey" type="password"></div>
+        <div class="form-group"><label class="form-label">Chrome Profile Path</label><input class="form-control" id="settingsChromeProfile"></div>
+        <button class="btn btn-primary" id="saveSettingsBtn" style="width:100%;justify-content:center">💾 Save</button>
+      </div>
+      <div class="modal-tab-content" id="mtab-reset">
+        <div class="danger-zone">
+          <button class="btn btn-danger" data-action="full_reset" style="width:100%">⚠️ FULL DATABASE RESET</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/app.js?v=14"></script>
+</body>
+</html>

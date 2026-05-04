@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .clock-container {
+            text-align: center;
+            padding: 40px 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .clock {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8),
+                         0 0 40px rgba(0, 212, 255, 0.6),
+                         0 0 60px rgba(0, 212, 255, 0.4);
+            letter-spacing: 0.5rem;
+        }
+
+        .date {
+            font-size: 1.8rem;
+            color: #e94560;
+            margin-top: 20px;
+            text-shadow: 0 0 10px rgba(233, 69, 96, 0.6);
+        }
+
+        .seconds {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-top: 10px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .seconds {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @media (max-width: 600px) {
+            .clock {
+                font-size: 4rem;
+                letter-spacing: 0.2rem;
+            }
+            .date {
+                font-size: 1.2rem;
+            }
+            .seconds {
+                font-size: 1.8rem;
+            }
+            .clock-container {
+                padding: 30px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <div class="clock" id="clock">00:00:00</div>
+        <div class="seconds" id="seconds">--</div>
+        <div class="date" id="date"></div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            
+            // Update time
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            // Update date
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
+        }
+
+        // Update immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

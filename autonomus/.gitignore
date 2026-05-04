@@ -1,0 +1,21 @@
+# Virtual Environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Environment variables (API keys and secrets)
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated files
+generated_project/*.json
+report.json
