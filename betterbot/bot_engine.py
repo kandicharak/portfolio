@@ -15,7 +15,7 @@ from langchain_community.chat_models import ChatOllama
 # Configuration
 BASE_DIR = Path("d:/betterbot")
 OUTPUT_DIR = BASE_DIR / "alphabot"
-MANAGER_API_KEY = "AIzaSyB2MFFLMEm5W-xfen5s9puCMsG9vXZykow"
+MANAGER_API_KEY = os.getenv("GOOGLE_API_KEY", "your_api_key_here")
 CODER_MODEL_NAME = "qwen-2.5-7b"
 
 
